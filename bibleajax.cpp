@@ -51,22 +51,8 @@ int main() {
   form_iterator nv = cgi.getElement("num_verse");
 
   // Convert and check input data
-  /*
-  bool validChap = false;
-  if (chapter != cgi.getElements().end()) {
-	 int chapterNum = chapter->getIntegerValue();
-	 if (chapterNum > 150) {
-		 cout << "<p>The chapter number (" << chapterNum << ") is too high.</p>" << endl;
-	 }
-	 else if (chapterNum <= 0) {
-		 cout << "<p>The chapter must be a positive number.</p>" << endl;
-	 }
-	 else
-		 validChap = true;
-  }
-  */
-  /* TO DO: OTHER INPUT VALUE CHECKS ARE NEEDED ... but that's up to you! */
 
+  //Checks if a valid book was inserted
   bool validBook = false;
   if (book != cgi.getElements().end()) {
 	  int bookNum = book->getIntegerValue();
@@ -79,20 +65,7 @@ int main() {
 	  else
 		  validBook = true;
   }
-  /*
-  bool validVerse = false;
-  if (verse != cgi.getElements().end()) {
-	  int verseNum = verse->getIntegerValue();
-	  if (verseNum > 66) {
-		  cout << "<p>The verse number (" << verseNum << ") is too high.</p>" << endl;
-	  }
-	  else if (verseNum <= 0) {
-		  cout << "<p>The verse must be a positive number.</p>" << endl;
-	  }
-	  else
-		  validVerse = true;
-  }
-  */
+
 
   
   
@@ -100,6 +73,9 @@ int main() {
   /* TO DO: PUT CODE HERE TO CALL YOUR BIBLE CLASS FUNCTIONS
    *        TO LOOK UP THE REQUESTED VERSES
    */
+
+
+  //Looks up the requested verse(s) and concatenates them to a string to later be printed
   Verse v;
   LookupResult result = OTHER;
   string verseContent = "";
@@ -114,6 +90,7 @@ int main() {
 	  v = webBible.lookup(ref, result);
 	  verseContent += v.getVerse();
 
+	  //Logic for getting multiple verses
 	  if (result != NO_VERSE && result != NO_CHAPTER) {
 		  for (int i = 0; i < nv->getIntegerValue() - 1; i++) {
 
