@@ -21,6 +21,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
+#include "Bible.h"
+#include "Ref.h"
 using namespace std;
 
 /* Required libraries for AJAX to function */
@@ -49,7 +51,8 @@ int main() {
   form_iterator nv = cgi.getElement("num_verse");
 
   // Convert and check input data
-  bool validInput = false;
+  /*
+  bool validChap = false;
   if (chapter != cgi.getElements().end()) {
 	 int chapterNum = chapter->getIntegerValue();
 	 if (chapterNum > 150) {
@@ -59,30 +62,91 @@ int main() {
 		 cout << "<p>The chapter must be a positive number.</p>" << endl;
 	 }
 	 else
-		 validInput = true;
+		 validChap = true;
   }
-  
+  */
   /* TO DO: OTHER INPUT VALUE CHECKS ARE NEEDED ... but that's up to you! */
+
+  bool validBook = false;
+  if (book != cgi.getElements().end()) {
+	  int bookNum = book->getIntegerValue();
+	  if (bookNum > 66) {
+		  cout << "<p>The book number (" << bookNum << ") is too high.</p>" << endl;
+	  }
+	  else if (bookNum <= 0) {
+		  cout << "<p>The book must be a positive number.</p>" << endl;
+	  }
+	  else
+		  validBook = true;
+  }
+  /*
+  bool validVerse = false;
+  if (verse != cgi.getElements().end()) {
+	  int verseNum = verse->getIntegerValue();
+	  if (verseNum > 66) {
+		  cout << "<p>The verse number (" << verseNum << ") is too high.</p>" << endl;
+	  }
+	  else if (verseNum <= 0) {
+		  cout << "<p>The verse must be a positive number.</p>" << endl;
+	  }
+	  else
+		  validVerse = true;
+  }
+  */
+
+  
+  
 
   /* TO DO: PUT CODE HERE TO CALL YOUR BIBLE CLASS FUNCTIONS
    *        TO LOOK UP THE REQUESTED VERSES
    */
+  Verse v;
+  LookupResult result = OTHER;
+  string verseContent = "";
+  Ref ref;
+  if (validBook) {
+	  int bk = book->getIntegerValue();
+	  int chap = chapter->getIntegerValue();
+	  int vrs = verse->getIntegerValue();
+	  Bible webBible("/home/class/csc3004/Bibles/web-complete");
+	  ref = Ref(bk, chap, vrs);
+	  
+	  v = webBible.lookup(ref, result);
+	  verseContent += v.getVerse();
 
+	  if (result != NO_VERSE && result != NO_CHAPTER) {
+		  for (int i = 0; i < nv->getIntegerValue() - 1; i++) {
+
+			  v = webBible.nextVerse(result);
+			  verseContent += " " + v.getRef().getBookName();
+			  verseContent += " " + to_string(v.getRef().getChap()) + ":";
+			  verseContent += to_string(v.getRef().getVerse()) + " ";
+			  verseContent += v.getVerse();
+
+		  }
+	  }
+	  
+	  
+
+  }
   /* SEND BACK THE RESULTS
    * Finally we send the result back to the client on the standard output stream
    * in HTML text format.
    * This string will be inserted as is inside a container on the web page, 
    * so we must include HTML formatting commands to make things look presentable!
    */
-  if (validInput) {
+  if (validBook && (result != NO_VERSE && result != NO_CHAPTER) ) {
 	cout << "Search Type: <b>" << **st << "</b>" << endl;
+
 	cout << "<p>Your result: "
-		 << **book << " " << **chapter << ":" << **verse 
-		 << "<em> The " << **nv
-		 << " actual verse(s) retreived from the server should go here!</em></p>" << endl;
+		 << ref.getBookName() << " " << **chapter << ":" << **verse 
+		 << "<em> " 
+		 << verseContent
+		 <<" </em></p>" << endl;
+	verseContent = "";
   }
   else {
-	  cout << "<p>Invalid Input: <em>report the more specific problem.</em></p>" << endl;
+	  cout << "<p> " << v.getVerse() << "</p>";
   }
   return 0;
 }

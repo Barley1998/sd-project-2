@@ -19,7 +19,7 @@ Verse::Verse(const string s) {
 	// store the remainder of the string in verseText
     verseRef = Ref(s);
     string::size_type start = s.find_first_of(" ", 0);
-    verseText = s.substr(start, s.size() - 1);
+    verseText = s.substr(start + 1);
     
 }  	
 

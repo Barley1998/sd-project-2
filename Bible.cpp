@@ -55,13 +55,16 @@ Verse Bible::lookup(Ref ref, LookupResult& status) {
 		if (temp > ref) {
 			if (noVerse) {
 				status = NO_VERSE;
-				cout << "Error: No such verse " << ref.getVerse() << " in " << ref.getBookName() << endl;
-				return aVerse = Verse(error(status));
+				string s =  "Error: No such verse " + to_string(ref.getVerse()) ;
+				string s2 = +" in " + ref.getBookName();
+				return aVerse = Verse(s + s2);
 			}
 			else {
 				status = NO_CHAPTER;
-				cout << "Error: No such chapter " << ref.getChap() << " in " << ref.getBookName() << endl;
-				return aVerse = Verse(error(status));
+				string s = "Error: No such chapter " + to_string(ref.getChap());
+				string s2 = " in " + ref.getBookName();
+
+				return aVerse = Verse(s + s2);
 			}
 		}
 		if (temp.getBook() == ref.getBook()) {
