@@ -65,8 +65,30 @@ int main() {
 	  else
 		  validBook = true;
   }
-
-
+  bool validChap = false;
+  if (chapter != cgi.getElements().end()) {
+	  int chapNum = chapter->getIntegerValue();
+	  if (chapNum > 150) {
+		  cout << "<p>The chapter number (" << chapNum << ") is too high.</p>" << endl;
+	  }
+	  else if (chapNum <= 0) {
+		  cout << "<p>The chapter must be a positive number.</p>" << endl;
+	  }
+	  else
+		  validChap = true;
+  }
+  bool validVerse = false;
+  if (verse != cgi.getElements().end()) {
+	  int verseNum = verse->getIntegerValue();
+	  if (verseNum > 176) {
+		  cout << "<p>The verse number (" << verseNum << ") is too high.</p>" << endl;
+	  }
+	  else if (verseNum <= 0) {
+		  cout << "<p>The verse must be a positive number.</p>" << endl;
+	  }
+	  else
+		  validVerse = true;
+  }
   
   
 
@@ -80,7 +102,7 @@ int main() {
   LookupResult result = OTHER;
   string verseContent = "";
   Ref ref;
-  if (validBook) {
+  if (validBook && validChap && validVerse) {
 	  int bk = book->getIntegerValue();
 	  int chap = chapter->getIntegerValue();
 	  int vrs = verse->getIntegerValue();
@@ -112,7 +134,7 @@ int main() {
    * This string will be inserted as is inside a container on the web page, 
    * so we must include HTML formatting commands to make things look presentable!
    */
-  if (validBook && (result != NO_VERSE && result != NO_CHAPTER) ) {
+  if (validBook && validChap && validVerse && (result != NO_VERSE && result != NO_CHAPTER) ) {
 	cout << "Search Type: <b>" << **st << "</b>" << endl;
 
 	cout << "<p>Your result: "
@@ -123,7 +145,9 @@ int main() {
 	verseContent = "";
   }
   else {
-	  cout << "<p> " << v.getVerse() << "</p>";
+	  if (validBook && validChap && validVerse) {
+		  cout << "<p> " << v.getVerse() << "</p>";
+	  }
   }
   return 0;
 }
