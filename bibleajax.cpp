@@ -137,10 +137,9 @@ int main() {
   if (validBook && validChap && validVerse && (result != NO_VERSE && result != NO_CHAPTER) ) {
 	cout << "Search Type: <b>" << **st << "</b>" << endl;
 
-	cout << "<p>Your result: "
+	cout << "<p><em>"
 		 << ref.getBookName() << " " << **chapter << ":" << **verse 
-		 << "<em> " 
-		 << verseContent
+		 << " " << verseContent
 		 <<" </em></p>" << endl;
 	verseContent = "";
   }
