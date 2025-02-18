@@ -38,9 +38,9 @@ Verse Bible::lookup(Ref ref, LookupResult& status) {
 	string verse = "";
 	bool noVerse = false;
 
+	
 
 	while (status != SUCCESS) {
-
 		
 
 		getline(instream, verse);
@@ -50,7 +50,7 @@ Verse Bible::lookup(Ref ref, LookupResult& status) {
 		
 		//Checks to see if it finds a valid verse in the chapter
 		
-
+		
 		
 		if (temp > ref) {
 			if (noVerse) {
@@ -82,12 +82,6 @@ Verse Bible::lookup(Ref ref, LookupResult& status) {
 		}
 	}
 	
-	
-
-	
-
-	
-
 	   // default verse, to be replaced by a Verse object
 	   // that is constructed from a line in the file.
 	
@@ -98,8 +92,21 @@ Verse Bible::lookup(Ref ref, LookupResult& status) {
 // If the file is not open, open the file and return the first verse.
 Verse Bible::nextVerse(LookupResult& status) {
 	string v = "";
-	getline(instream, v);
-	Verse verse = Verse(v);
+	Verse verse;
+	if (!instream.eof()) {
+		if (instream.eof()) {
+			status == OTHER;
+			return verse;
+		}
+		getline(instream, v);
+		
+		Verse verse = Verse(v);
+		status = SUCCESS;
+		return verse;
+	}
+	else { 
+		status = OTHER;
+	}
 	return verse;
 }
 

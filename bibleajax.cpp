@@ -99,7 +99,7 @@ int main() {
 
   //Looks up the requested verse(s) and concatenates them to a string to later be printed
   Verse v;
-  LookupResult result = OTHER;
+  LookupResult result = NO_BOOK;
   string verseContent = "";
   Ref ref;
   if (validBook && validChap && validVerse) {
@@ -115,13 +115,14 @@ int main() {
 	  //Logic for getting multiple verses
 	  if (result != NO_VERSE && result != NO_CHAPTER) {
 		  for (int i = 0; i < nv->getIntegerValue() - 1; i++) {
-
 			  v = webBible.nextVerse(result);
-			  verseContent += " " + v.getRef().getBookName();
-			  verseContent += " " + to_string(v.getRef().getChap()) + ":";
-			  verseContent += to_string(v.getRef().getVerse()) + " ";
-			  verseContent += v.getVerse();
+			  if (result != OTHER) {
 
+				  verseContent += " " + v.getRef().getBookName();
+				  verseContent += " " + to_string(v.getRef().getChap()) + ":";
+				  verseContent += to_string(v.getRef().getVerse()) + " ";
+				  verseContent += v.getVerse();
+			  }
 		  }
 	  }
 	  
@@ -134,7 +135,7 @@ int main() {
    * This string will be inserted as is inside a container on the web page, 
    * so we must include HTML formatting commands to make things look presentable!
    */
-  if (validBook && validChap && validVerse && (result != NO_VERSE && result != NO_CHAPTER) ) {
+  if (validBook && validChap && validVerse && (result != NO_VERSE && result != NO_CHAPTER && result != OTHER) ) {
 	cout << "Search Type: <b>" << **st << "</b>" << endl;
 
 	cout << "<p><em>"
@@ -143,10 +144,13 @@ int main() {
 		 <<" </em></p>" << endl;
 	verseContent = "";
   }
+  else if (result == OTHER){
+	  cout << "<p> Error: All outta verses </p>";
+  }
   else {
 	  if (validBook && validChap && validVerse) {
 		  cout << "<p> " << v.getVerse() << "</p>";
 	  }
-  }
+	}
   return 0;
 }
