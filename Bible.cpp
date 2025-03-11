@@ -5,6 +5,7 @@
 #include "Verse.h"
 #include "Bible.h" 
 #include <iostream>
+#include <istream>
 #include <fstream>
 #include <string>
 #include <stdio.h>
@@ -13,7 +14,7 @@ using namespace std;
 
 Bible::Bible() { // Default constructor
 	infile = "/home/class/csc3004/Bibles/web-complete";
-	
+	buildTextIndex();
 }
 
 // Constructor – pass bible filename
@@ -21,71 +22,10 @@ Bible::Bible(const string s) { infile = s; }
 
 // REQUIRED: lookup finds a given verse in this Bible
 Verse Bible::lookup(Ref ref, LookupResult& status) { 
-    // TODO: scan the file to retrieve the line that holds ref ...
-    // update the status variable
-	
-	
+	ifstream in;
+	int r = bibMap[ref];
 	instream.open(infile, ifstream::in);
-	isOpen = true;
-	
-
-	
-	status = NO_BOOK; // placeholder until retrieval is attempted
-	// create and return the verse object
-	Verse aVerse;
-	Ref temp;
-	
-	string verse = "";
-	bool noVerse = false;
-
-	
-
-	while (status != SUCCESS) {
-		
-
-		getline(instream, verse);
-		string::size_type end = verse.find_first_of(" ", 0);
-		string tempStr = verse.substr(0, end);
-		temp = Ref(tempStr);
-		
-		//Checks to see if it finds a valid verse in the chapter
-		
-		
-		
-		if (temp > ref) {
-			if (noVerse) {
-				status = NO_VERSE;
-				string s =  "Error: No such verse " + to_string(ref.getVerse()) ;
-				string s2 = +" in " + ref.getBookName();
-				return aVerse = Verse(s + s2);
-			}
-			else {
-				status = NO_CHAPTER;
-				string s = "Error: No such chapter " + to_string(ref.getChap());
-				string s2 = " in " + ref.getBookName();
-
-				return aVerse = Verse(s + s2);
-			}
-		}
-		if (temp.getBook() == ref.getBook()) {
-			if (temp.getChap() == ref.getChap()) {
-				noVerse = true;
-			}
-			else noVerse = false;
-		}
-
-		//Checks if the references are equal
-		if (temp == ref) {
-			 return aVerse = Verse(verse);
-			status = SUCCESS;
-
-		}
-	}
-	
-	   // default verse, to be replaced by a Verse object
-	   // that is constructed from a line in the file.
-	
-    return aVerse;
+	in.seekg(r);
 }
 
 // REQUIRED: Return the next verse from the Bible file stream if the file is open.
@@ -137,4 +77,21 @@ Ref Bible::next(const Ref ref, LookupResult& status) {
 // OPTIONAL: Return the reference before the given ref
 Ref Bible::prev(const Ref ref, LookupResult& status) {
 	return ref;
+}
+
+void Bible::buildTextIndex() {
+	numRefs = 0;
+	ifstream in;
+	string str = "";
+	instream.open(infile, ifstream::in);
+	int offset = in.tellg();
+	while (!instream.eof()) {
+		
+		getline(instream, str);
+		Ref newRef = Ref(str);
+		bibMap.insert({ newRef, offset });
+		offset = in.tellg();
+		numRefs++;
+	}
+	cout << "Last Offset: " << offset;
 }

@@ -50,5 +50,13 @@ class Bible {	// A class to represent a version of the bible
    Ref next(const Ref ref, LookupResult& status);
    // OPTIONAL: Return the reference before the given parameter ref
    Ref prev(const Ref ref, LookupResult& status);
+
+   map<Ref, int> bibMap;
+
+   int numRefs;
+
+   void buildTextIndex();
+
+
 };
 #endif //Bible_H
