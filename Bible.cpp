@@ -25,6 +25,8 @@ Bible::Bible(const string s) {
 
 // REQUIRED: lookup finds a given verse in this Bible
 Verse Bible::lookup(Ref ref, LookupResult& status) { 
+	//Take a reference, find the byte offset with its location, move the file pointer to that location
+	//then get the verse and construct a verse object
 	ifstream in;
 	string verseText = "";
 	int refLocation = bibMap[ref];
@@ -91,7 +93,7 @@ Ref Bible::prev(const Ref ref, LookupResult& status) {
 }
 
 void Bible::buildTextIndex() {
-	
+	//Builds a map of every verse in the bible with the reference as the key to the byte offset
 	ifstream in;
 	string str = "";
 	instream.open(infile, ifstream::in);

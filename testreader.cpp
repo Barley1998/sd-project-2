@@ -68,12 +68,12 @@ int main (int argc, char **argv) {
 			//cout << "Result status: " << result << endl;
 			verse.display();
 			cout << endl;
-		/*	for (int i = 0; i < times - 1; i++) {
+			for (int i = 0; i < times - 1; i++) {
 				verse = webBible.nextVerse(result);
 				verse.display();
 				cout << endl;
 			}
-			*/
+			
 		}
 		else { cout << "Error: no book " << b << " in the bible" << endl; }
 	}
