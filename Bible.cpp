@@ -18,14 +18,25 @@ Bible::Bible() { // Default constructor
 }
 
 // Constructor – pass bible filename
-Bible::Bible(const string s) { infile = s; }
+Bible::Bible(const string s) { 
+	infile = s; 
+	buildTextIndex();
+}
 
 // REQUIRED: lookup finds a given verse in this Bible
 Verse Bible::lookup(Ref ref, LookupResult& status) { 
 	ifstream in;
-	int r = bibMap[ref];
+	string verseText = "";
+	int refLocation = bibMap[ref];
 	instream.open(infile, ifstream::in);
-	in.seekg(r);
+	instream.clear();
+	instream.seekg(refLocation);
+
+	getline(instream, verseText);
+	
+
+	Verse verse = Verse(verseText);
+	return verse;
 }
 
 // REQUIRED: Return the next verse from the Bible file stream if the file is open.
@@ -80,18 +91,24 @@ Ref Bible::prev(const Ref ref, LookupResult& status) {
 }
 
 void Bible::buildTextIndex() {
-	numRefs = 0;
+	
 	ifstream in;
 	string str = "";
 	instream.open(infile, ifstream::in);
-	int offset = in.tellg();
-	while (!instream.eof()) {
+	int offset = instream.tellg();
+	while (getline(instream, str)) {
 		
-		getline(instream, str);
 		Ref newRef = Ref(str);
 		bibMap.insert({ newRef, offset });
-		offset = in.tellg();
-		numRefs++;
+		offset = instream.tellg();
+
 	}
-	cout << "Last Offset: " << offset;
+	/*
+	for (const auto& pair : bibMap) {
+		Ref test = pair.first;
+		test.display();
+		cout << " " << pair.second;
+	}
+	*/
+	cout << "Last Offset: " << offset << endl;
 }

@@ -14,25 +14,24 @@ using namespace std;
 int main (int argc, char **argv) {
 	// Create Bible object to process the raw text file
 	Bible webBible("/home/class/csc3004/Bibles/web-complete");
-	webBible.buildTextIndex();
-	Ref ref1 = Ref(1, 1, 1);
+/*	Ref ref1 = Ref(1, 1, 1);
 	Ref ref2 = Ref(1, 1, 3);
 	Ref ref3 = Ref(1, 1, 5);
-	cout << "Number of References Created: " << numRefs << endl;
+	cout << "Number of References Created: " << webBible.bibMap.size() << endl;
 	cout << webBible.bibMap[ref1] << webBible.bibMap[ref2] << webBible.bibMap[ref3];
-/*
+	*/
 	Verse verse;
 	int b, c, v;
 	LookupResult result;
 	cout << "Using Bible from: ";
 	webBible.display();
-	*/
+	
 	// Prompt for input: get reference to lookup
 	// This is good for testing your classes quickly for the first milestone.
 	/* cout << "Enter 3 integers for book, chapter and verse to find: " << flush;
 	cin >> b >> c >> v;*/
 	// TODO: your final program should get input from command line arguments instead.
-	/*
+	
 	int times = 1;
 	if (argc > 3 && argc < 6) {
 		if (argc == 5) {
@@ -69,13 +68,14 @@ int main (int argc, char **argv) {
 			//cout << "Result status: " << result << endl;
 			verse.display();
 			cout << endl;
-			for (int i = 0; i < times - 1; i++) {
+		/*	for (int i = 0; i < times - 1; i++) {
 				verse = webBible.nextVerse(result);
 				verse.display();
 				cout << endl;
 			}
+			*/
 		}
 		else { cout << "Error: no book " << b << " in the bible" << endl; }
 	}
-	*/
+	
 }

@@ -53,7 +53,7 @@ class Bible {	// A class to represent a version of the bible
 
    map<Ref, int> bibMap;
 
-   int numRefs;
+   
 
    void buildTextIndex();
 

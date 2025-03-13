@@ -45,11 +45,11 @@ Verse.o : Ref.h Verse.h Verse.cpp
 Bible.o : Ref.h Verse.h Bible.h Bible.cpp
 	$(CC) $(CFLAGS) -c Bible.cpp
 
-testreader.o : Ref.h Verse.h Bible.h testreader.cpp
+testreader.o : testreader.cpp Ref.h Verse.h Bible.h 
 	$(CC) $(CFLAGS) -c testreader.cpp
 
-testreader: Bible.o Ref.o Verse.o
-	#$(CC) $(CFLAGS) -o testreader.cpp testreader.o Ref.o Verse.o Bible.o -lcgicc
+testreader: testreader.o Bible.o Ref.o Verse.o
+	$(CC) $(CFLAGS) -o testreader testreader.o Ref.o Verse.o Bible.o
 			
 
 #PutCGI:	bibleajax.cgi

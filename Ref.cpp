@@ -140,7 +140,8 @@ bool Ref::operator==(const Ref r) {
     else return false;
 }
 
-bool Ref::operator<(const Ref r) {
+bool Ref::operator<(const Ref &r) const
+{
     if (book < r.book) {
         return true;
     }
@@ -148,12 +149,13 @@ bool Ref::operator<(const Ref r) {
         if (chap < r.chap) {
             return true;
         }
-    }
-    else if (book == r.book && chap == r.chap) {
-        if (verse < r.verse) {
-            return true;
+        else if (book == r.book && chap == r.chap) {
+            if (verse < r.verse) {
+                return true;
+            }
         }
     }
+   
     return false;
 }
 
