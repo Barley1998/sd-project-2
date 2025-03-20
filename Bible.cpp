@@ -29,16 +29,41 @@ Verse Bible::lookup(Ref ref, LookupResult& status) {
 	//then get the verse and construct a verse object
 	ifstream in;
 	string verseText = "";
-	int refLocation = bibMap[ref];
-	instream.open(infile, ifstream::in);
-	instream.clear();
-	instream.seekg(refLocation);
 
-	getline(instream, verseText);
-	
+	if (bibMap.find(ref) != bibMap.end()) {
+		int refLocation = bibMap[ref];
+		instream.open(infile, ifstream::in);
+		instream.clear();
+		instream.seekg(refLocation);
 
-	Verse verse = Verse(verseText);
-	return verse;
+		getline(instream, verseText);
+
+
+		Verse verse = Verse(verseText);
+		return verse;
+	}
+	else {
+		Ref test = Ref(ref.getBook(), 1, 1);
+		Verse error;
+		if (bibMap.find(test) == bibMap.end()) {
+			error = Verse("1:1:1 Error, invalid book number");
+			status = NO_BOOK;
+			return error;
+		}
+		test = Ref(1, ref.getChap(), 1);
+		if (bibMap.find(test) == bibMap.end()) {
+			error = Verse("1:1:1 Error, invalid chapter number");
+			status = NO_CHAPTER;
+			return error;
+		}
+		test = Ref(1, 1, ref.getVerse());
+		if (bibMap.find(test) == bibMap.end()) {
+			error = Verse("1:1:1 Error, invalid verse number");
+			status = NO_VERSE;
+			return error;
+		}
+		return error;
+	}
 }
 
 // REQUIRED: Return the next verse from the Bible file stream if the file is open.
@@ -112,5 +137,5 @@ void Bible::buildTextIndex() {
 		cout << " " << pair.second;
 	}
 	*/
-	cout << "Last Offset: " << offset << endl;
+	
 }

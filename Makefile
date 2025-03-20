@@ -48,9 +48,17 @@ Bible.o : Ref.h Verse.h Bible.h Bible.cpp
 testreader.o : testreader.cpp Ref.h Verse.h Bible.h 
 	$(CC) $(CFLAGS) -c testreader.cpp
 
-testreader: testreader.o Bible.o Ref.o Verse.o
-	$(CC) $(CFLAGS) -o testreader testreader.o Ref.o Verse.o Bible.o
-			
+testreader: testreader.o Bible.o Ref.o Verse.o fifo.o
+	$(CC) $(CFLAGS) -o testreader testreader.o Ref.o Verse.o Bible.o fifo.o
+
+fifo.o: fifo.cpp fifo.h
+	$(CC) $(CFLAGS) -c fifo.cpp
+
+sslookupserver.o: sslookupserver.cpp fifo.h textindex.h
+	$(CC) $(CFLAGS) -c sslookupserver.cpp
+
+sslookupserver: sslookupserver.o textindex.o fifo.o
+	$(CC) $(CFLAGS) -o sslookupserver sslookupserver.o textindex.o fifo.o	
 
 #PutCGI:	bibleajax.cgi
 		#chmod 755 bibleajax.cgi
