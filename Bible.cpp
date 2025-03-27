@@ -71,11 +71,7 @@ Verse Bible::lookup(Ref ref, LookupResult& status) {
 Verse Bible::nextVerse(LookupResult& status) {
 	string v = "";
 	Verse verse;
-	if (!instream.eof()) {
-		if (instream.eof()) {
-			status == OTHER;
-			return verse;
-		}
+	if (!instream.peek() != EOF) {
 		getline(instream, v);
 		
 		Verse verse = Verse(v);
@@ -85,6 +81,7 @@ Verse Bible::nextVerse(LookupResult& status) {
 	else { 
 		status = OTHER;
 	}
+	verse = Verse("1:1:1 You have reached the end");
 	return verse;
 }
 
