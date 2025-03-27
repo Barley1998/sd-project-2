@@ -22,6 +22,10 @@
 #include <stdio.h>
 #include <string.h>
 #include "fifo.h"
+#define logging
+#define LOG_FILENAME "/tmp/calhaynes-client.log"
+#include "logfile.h"
+
 using namespace std;
 
 /* Required libraries for AJAX to function */
@@ -31,6 +35,9 @@ using namespace std;
 using namespace cgicc;
 
 int main() {
+#ifdef logging
+	logFile.open(LOG_FILENAME, ios::out);
+#endif
   /* A CGI program must send a response header with content type
    * back to the web client before any other output.
    * For an AJAX request, our response is not a complete HTML document,
@@ -101,7 +108,7 @@ int main() {
   string verseContent = "";
   Fifo recfifo("_reply");
   Fifo sendfifo("_request");
-  if (validBook && validChap && validVerse) {
+  
 	  int bk = book->getIntegerValue();
 	  int chap = chapter->getIntegerValue();
 	  int vrs = verse->getIntegerValue();
@@ -113,7 +120,7 @@ int main() {
 	  
 
 
-  }
+  
   /* SEND BACK THE RESULTS
    * Finally we send the result back to the client on the standard output stream
    * in HTML text format.

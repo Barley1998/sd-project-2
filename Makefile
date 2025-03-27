@@ -27,7 +27,7 @@ client.cgi:	client.o Ref.o Verse.o Bible.o fifo.o
 		 -l option is necessary to link with cgicc library
 
 # main program to handle AJAX/CGI requests for Bible references
-client.o:	client.cpp fifo.h
+client.o:	client.cpp fifo.h logfile.h
 		$(CC) $(CFLAGS) -c client.cpp
 
 # TO DO: copy targets to build classes from Project 1:
