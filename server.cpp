@@ -13,7 +13,7 @@
 using namespace std;
 
 int main (/*int argc, char** argv*/) {
-	LookupResult result;
+	LookupResult result = SUCCESS;
 	// Create Bible object to process the raw text file
 	Bible webBible("/home/class/csc3004/Bibles/web-complete");
 	webBible.buildTextIndex();
@@ -24,8 +24,9 @@ int main (/*int argc, char** argv*/) {
 
 	recfifo.openread(); // only open once
 	sendfifo.openwrite();
+	string returnMessage;
 	while (true) {
-
+		returnMessage = "";
 		string refStr = recfifo.recv();
 
 		cout << refStr << endl;
@@ -43,39 +44,54 @@ int main (/*int argc, char** argv*/) {
 		int v = atoi(strverse.c_str());
 		cout << v << endl;
 		//Get number of verses
-		int times = 0;
+		int times = 1;
 		if (refStr != to_string(v)) {
 			string strTimes = GetNextToken(refStr, " ");
 			times = atoi(strTimes.c_str());
 			cout << times << endl;
 		}
-
+		
+		//checks if the string parsing failed at any point
 		if (b != 0 && c != 0 && v != 0) {
 			
 				newRef = Ref(b, c, v);
+				newRef.display();
 				verse = webBible.lookup(newRef, result);
 				if (result != NO_BOOK && result != NO_CHAPTER && result != NO_VERSE) {
-					string returnMessage = newRef.getBookName() + ":" + to_string(c) + ":" + to_string(v) + " " + verse.getVerse();
+					//constructs the string to return
+					returnMessage = newRef.getBookName() + ":" + to_string(c) + ":" + to_string(v) + " " + verse.getVerse();
+					cout << returnMessage << endl;
 					sendfifo.send(returnMessage);
-					if (times > 1) {
+					//loops nextVerse the number of times specified
+					
 						for (int i = 0; i < times - 1; i++) {
 							Verse next = webBible.nextVerse(result);
 							Ref nextRef = next.getRef();
-							sendfifo.send(nextRef.getBookName() + ":" + to_string(nextRef.getChap()) + ":" + to_string(nextRef.getVerse()) + " " + next.getVerse());
-							
+							returnMessage = nextRef.getBookName() + ":" + to_string(nextRef.getChap()) + ":" + to_string(nextRef.getVerse()) + " " + next.getVerse() + " ";
+							sendfifo.send(returnMessage);
 						}
-					}
+						sendfifo.send("$end");
+						cout << returnMessage << endl;
+
+					
+					
 				}
 				else {
+					//sends the error message to the client
 					string errorMessage = verse.getVerse();
+					cout << errorMessage << endl;
+					result = SUCCESS;
 					sendfifo.send(errorMessage);
+					sendfifo.send("$end");
 				}
 
 				
 			
 		}
 		else {
+			//error that shows the expected format
 			sendfifo.send("Invalid Format: Must be in a book-number:chapter-number:verse-number number of verses format");
+			sendfifo.send("$end");
 		}
 		
 	}

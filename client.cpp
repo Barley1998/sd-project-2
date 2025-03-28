@@ -23,7 +23,7 @@
 #include <string.h>
 #include "fifo.h"
 #define logging
-#define LOG_FILENAME "/tmp/calhaynes-client.log"
+#define LOG_FILENAME "/home/class/csc3004/tmp/calhaynes-client.log"
 #include "logfile.h"
 
 using namespace std;
@@ -35,6 +35,14 @@ using namespace std;
 using namespace cgicc;
 
 int main() {
+	Cgicc cgi;  // create object used to access CGI request data
+
+	cout << "Content-Type: text/plain\n\n";
+
+	Fifo recfifo("_reply");
+	Fifo sendfifo("_request");
+
+
 #ifdef logging
 	logFile.open(LOG_FILENAME, ios::out);
 #endif
@@ -43,9 +51,9 @@ int main() {
    * For an AJAX request, our response is not a complete HTML document,
    * so the response type is just plain text to insert into the web page.
    */
-  cout << "Content-Type: text/plain\n\n";
   
-  Cgicc cgi;  // create object used to access CGI request data
+  
+ 
 
   // GET THE INPUT DATA
   // browser sends us a string of field name/value pairs from HTML form
@@ -56,67 +64,33 @@ int main() {
   form_iterator verse = cgi.getElement("verse");
   form_iterator nv = cgi.getElement("num_verse");
 
-  // Convert and check input data
+  log("Opening Pipes");
+  sendfifo.openwrite();
+  log("Opening read");
+  recfifo.openread();
+  log("Pipes are Open");
 
-  //Checks if a valid book was inserted
-  /*
-  bool validBook = false;
-  if (book != cgi.getElements().end()) {
-	  int bookNum = book->getIntegerValue();
-	  if (bookNum > 66) {
-		  cout << "<p>The book number (" << bookNum << ") is too high.</p>" << endl;
-	  }
-	  else if (bookNum <= 0) {
-		  cout << "<p>The book must be a positive number.</p>" << endl;
-	  }
-	  else
-		  validBook = true;
-  }
-  bool validChap = false;
-  if (chapter != cgi.getElements().end()) {
-	  int chapNum = chapter->getIntegerValue();
-	  if (chapNum > 150) {
-		  cout << "<p>The chapter number (" << chapNum << ") is too high.</p>" << endl;
-	  }
-	  else if (chapNum <= 0) {
-		  cout << "<p>The chapter must be a positive number.</p>" << endl;
-	  }
-	  else
-		  validChap = true;
-  }
-  bool validVerse = false;
-  if (verse != cgi.getElements().end()) {
-	  int verseNum = verse->getIntegerValue();
-	  if (verseNum > 176) {
-		  cout << "<p>The verse number (" << verseNum << ") is too high.</p>" << endl;
-	  }
-	  else if (verseNum <= 0) {
-		  cout << "<p>The verse must be a positive number.</p>" << endl;
-	  }
-	  else
-		  validVerse = true;
-  }
   
-  */
-
-  /* TO DO: PUT CODE HERE TO CALL YOUR BIBLE CLASS FUNCTIONS
-   *        TO LOOK UP THE REQUESTED VERSES
-   */
-
+  
 
   //Looks up the requested verse(s) and concatenates them to a string to later be printed
-  string verseContent = "";
-  Fifo recfifo("_reply");
-  Fifo sendfifo("_request");
+  int bk = book->getIntegerValue();
+  int chap = chapter->getIntegerValue();
+  int vrs = verse->getIntegerValue();
+  int numVer = nv->getIntegerValue();
+  string serverCall = "";
+
+  //Constructs the string to send to the server
+  serverCall = to_string(bk) + ":" + to_string(chap) + ":" + to_string(vrs) + " " + to_string(numVer);
+  log(serverCall);
+
   
-	  int bk = book->getIntegerValue();
-	  int chap = chapter->getIntegerValue();
-	  int vrs = verse->getIntegerValue();
-	  int numVer = nv->getIntegerValue();
-	  string serverCall = "";
+	//  string serverCall = "";
 	  //Constructs the string to send to the server
-	  serverCall = to_string(bk) + ":" + to_string(chap) + ":" + to_string(vrs) + " " + to_string(numVer);
+	  //serverCall = to_string(bk) + ":" + to_string(chap) + ":" + to_string(vrs) + " " + to_string(numVer);
+	  
 	  sendfifo.send(serverCall);
+	  log("Server Called");
 	  
 
 
@@ -129,8 +103,16 @@ int main() {
    */
 
 	//prints out the result from the server
-	  cout << "<p>" << recfifo.recv() << "</p>" << endl;
-
+	  
+	  string serverReply = "";
+	  while(serverReply != "$end") {
+		 serverReply = recfifo.recv();
+		  log(serverReply);
+		  if (serverReply != "$end") {
+			  cout << "<p>" << serverReply << "</p>" << endl;
+			  log("Printed");
+		  }
+	  }
 	
 	
   return 0;

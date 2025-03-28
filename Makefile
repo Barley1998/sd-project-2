@@ -18,13 +18,13 @@ USER= calhaynes
 CC= g++
 CFLAGS= -g -std=c++11
 
-all:	client.cgi PutCGI PutHTML
+all:	server client.cgi PutCGI PutHTML
 
 # TO DO: For bibleajax.cgi, add dependencies to include
 # compiled classes from Project 1 to be linked into the executable program
 client.cgi:	client.o Ref.o Verse.o Bible.o fifo.o
 		$(CC) $(CFLAGS) -o client.cgi client.o Ref.o Verse.o Bible.o fifo.o -lcgicc
-		 -l option is necessary to link with cgicc library
+		 #-l option is necessary to link with cgicc library
 
 # main program to handle AJAX/CGI requests for Bible references
 client.o:	client.cpp fifo.h logfile.h
